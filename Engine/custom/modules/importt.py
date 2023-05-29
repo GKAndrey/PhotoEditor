@@ -1,6 +1,6 @@
 import PIL
 from PIL.ExifTags import TAGS
-from PIL import Image, ImageTk
+from PIL import Image, ImageTk, ImageFilter
 import customtkinter
 import os
 import requests
@@ -25,33 +25,25 @@ def info_and_resize_img(file_path):
     return_info = [img_info, img_resize]
     return return_info
 
-
-class Example(tkinter.Frame):
-    def __init__(self):
-        super().__init__()
-        self.initUI()
-    def initUI(self):
-        self.img = Image.open(os.path.join(PATH, "custom", "modules", "img2.jpg"))
-        self.image = ImageTk.PhotoImage(self.img)
-        self.info = info_and_resize_img(os.path.join(PATH, "custom", "modules", "img2.jpg"))
-        canvas = tkinter.Canvas(
-            height=self.info[0]["Висота світлини"][1],
-            width=self.info[0]["Ширина світлини"][1]
-        )
-        canvas.create_image(0, 0, anchor=tkinter.NE, image=self.image)
-        canvas.pack(anchor=tkinter.NE, expand=True)
+PATH = os.path.abspath(__file__ + '/../../..')
 
 class Ex():
     def __init__(self):
         pil_image = Image.open(os.path.join(PATH, "custom", "modules", "img2.jpg"))
         self.image = ImageTk.PhotoImage(pil_image)
-        image_sprite = tkinter.Label(menu, image=self.image)
-        image_sprite.pack(anchor=tkinter.NE, expand=True)
+        self.image_sprite = tkinter.Label(menu, image=self.image)
+        self.image_sprite.pack(anchor=tkinter.NE, expand=True)
+    def update_photo(self, path=os.path.join(PATH, "custom", "modules", "img2.jpg")):
+        pil_image = Image.open(path)
+        self.image = ImageTk.PhotoImage(pil_image)
+        self.image_sprite["image"] = self.image
+        self.image_sprite.image = self.image
 
-
-
-PATH = os.path.abspath(__file__ + '/../../..')
 
 menu = tkinter.Tk()
+
+bl_w_w = tkinter.IntVar()
+mirr_w = tkinter.IntVar()
+blur_w = tkinter.IntVar()
 
 ex = Ex()
