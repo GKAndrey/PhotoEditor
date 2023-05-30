@@ -4,17 +4,19 @@ from PIL import Image, ImageTk, ImageFilter
 import customtkinter
 import os
 import requests
+import re
 import tkinter
 from tkinter import ttk
 from tkinter import filedialog
+from tkinter import messagebox
 import time
 
 
 def info_and_resize_img(file_path):
     img_open = Image.open(file_path)
     img_resize = img_open.resize((720, 480))
-    img_resize.save(os.path.join(PATH, "custom", "modules", "img2.jpg"))
-    img_resize = Image.open(os.path.join(PATH, "custom", "modules", "img2.jpg"))
+    img_resize.save(os.path.join(PATH, "custom", "modules", "img2.png"))
+    img_resize = Image.open(os.path.join(PATH, "custom", "modules", "img2.png"))
     img_info = {
         "Назва світлини": img_open.filename,
         "Вага світлини": os.path.getsize(file_path) // 1024,
@@ -28,12 +30,15 @@ def info_and_resize_img(file_path):
 PATH = os.path.abspath(__file__ + '/../../..')
 
 class Ex():
-    def __init__(self):
-        pil_image = Image.open(os.path.join(PATH, "custom", "modules", "img2.jpg"))
-        self.image = ImageTk.PhotoImage(pil_image)
-        self.image_sprite = tkinter.Label(menu, image=self.image)
-        self.image_sprite.pack(anchor=tkinter.NE, expand=True)
-    def update_photo(self, path=os.path.join(PATH, "custom", "modules", "img2.jpg")):
+    def __init__(self, master, path = os.path.join(PATH, "custom", "modules", "img2.png")):
+        try:
+            pil_image = Image.open(path)
+            self.image = ImageTk.PhotoImage(pil_image)
+            self.image_sprite = tkinter.Label(master=master, image=self.image)
+        except:
+            self.image_sprite = tkinter.Label(menu)
+        self.image_sprite.pack(anchor=tkinter.NE)
+    def update_photo(self, path=os.path.join(PATH, "custom", "modules", "img2.png")):
         pil_image = Image.open(path)
         self.image = ImageTk.PhotoImage(pil_image)
         self.image_sprite["image"] = self.image
@@ -46,4 +51,4 @@ bl_w_w = tkinter.IntVar()
 mirr_w = tkinter.IntVar()
 blur_w = tkinter.IntVar()
 
-ex = Ex()
+ex = Ex(menu)
