@@ -49,7 +49,7 @@ def web_select_img():
 
 
 def save_img():
-    global save_tk, btn_save, save_file_v, save_input
+    global save_tk, btn_save, save_file_v, save_input, input_res
     def save_file():
         global save_path
         save_path = save_input.get()
@@ -76,17 +76,50 @@ def save_img():
     file_path = os.path.join(PATH, "custom", "modules", "img.png")
     save_tk = tkinter.Tk()
     save_tk.protocol("WM_DELETE_WINDOW", close_window)
-    save_tk.geometry("400x200")
+    save_tk.geometry("640x130")
     save_tk.title("Збереження фото")
     save_tk.iconbitmap(os.path.join(PATH,"custom","phot_icon.ico"))
     save_tk["bg"] = "gray58"
-    save_input = tkinter.Entry(save_tk, width=50, font=(os.path.join(PATH, "custom", "modules", "angrybirds-regular3.ttf"), 12))
-    save_input.pack(pady=10)
+
+    save_input = tkinter.Entry(save_tk,
+                               width=35,
+                               font=(os.path.join(PATH, "custom", "modules", "angrybirds-regular3.ttf"), 12))
+    save_input.grid(row=0, column=0, sticky='w', pady=5, padx=10)
     save_input.focus()
-    btn_save = tkinter.Button(master = save_tk,text="Зберегти", width = 30, command=save_file, font=(os.path.join(PATH, "custom", "modules", "angrybirds-regular3.ttf"), 12))
-    btn_save.pack(side="bottom", pady=3)
-    btn_save_path = tkinter.Button(master = save_tk,text="Обрати шлях на комп'ютері", width = 30, command=save_file_Path, font=(os.path.join(PATH, "custom", "modules", "angrybirds-regular3.ttf"), 12))
-    btn_save_path.pack(side="top", pady=7)
+
+    input_res = tkinter.Entry(save_tk,
+                              width=35,
+                              font=(os.path.join(PATH, "custom", "modules", "angrybirds-regular3.ttf"), 12))
+    input_res.grid(row=1, column=0, sticky='w', pady=5, padx=10)
+
+    btn_save_path = tkinter.Button(save_tk,
+                                   text = "Обрати шлях на комп'ютері",
+                                   width = 30,
+                                   command = save_file_Path,
+                                   font = (os.path.join(PATH, "custom", "modules", "angrybirds-regular3.ttf"), 12))
+    btn_save_path.grid(row=0, column=1, pady=5, padx=10)
+
+    btn_res = tkinter.Button(save_tk,
+                             text='Змінити роздільну здатність',
+                             width=30,
+                             command=resolution_get,
+                             font=(os.path.join(PATH, "custom", "modules", "angrybirds-regular3.ttf"), 12))
+    btn_res.grid(row=1, column=1, pady=5, padx=10)
+
+    btn_res_preview = tkinter.Button(save_tk,
+                                     text='Переглянути результат маcштабування',
+                                     width= 35,
+                                     command=resolution_preview,
+                                     font=(os.path.join(PATH, "custom", "modules", "angrybirds-regular3.ttf"), 12))
+    btn_res_preview.grid(row=2, column=0, pady=5, padx=9)
+
+    btn_save = tkinter.Button(save_tk,
+                              text="Зберегти",
+                              width = 30,
+                              command=save_file,
+                              font=(os.path.join(PATH, "custom", "modules", "angrybirds-regular3.ttf"), 12))
+    btn_save.grid(row=2, column=1, pady=5, padx=10)
+    
     save_tk.mainloop()
 
 
@@ -101,7 +134,7 @@ def info_and_resize_img(file_path):
         "Вага світлини": os.path.getsize(file_path) // 1024,
         "Висота світлини": [img_open.height, img_resize.height],
         "Ширина світлини": [img_open.width, img_resize.width],
-        "Формат світлини": img_open.format,
+        "Формат світлини": img_open.format
         }
     return_info = [img_info, img_resize]
     return return_info
@@ -115,7 +148,12 @@ def info_foto(info):
     Висота світлини: {info[0]["Висота світлини"][0]};
     Ширина світлини: {info[0]["Ширина світлини"][0]};
     Формат світлини: {info[0]["Формат світлини"]}.'''
-    label = customtkinter.CTkLabel(master = menu, text = msg, height = 175, width = 250, text_color="Black", text_font=(os.path.join(PATH, "custom", "modules", "angrybirds-regular3.ttf"), 13),)
+    label = customtkinter.CTkLabel(master = menu,
+                                   text = msg,
+                                   height = 175,
+                                   width = 250,
+                                   text_color="Black",
+                                   text_font=(os.path.join(PATH, "custom", "modules", "angrybirds-regular3.ttf"), 13),)
     label.place(x=0,y=0)
 
 # bl_w_w   mirr_w   blur_w
@@ -156,16 +194,32 @@ def convertor(info, name, format):
     elif format == 3:
         img_open.save(f"{name}.jpg", "JPG")
 
-def change_res(info = os.path.join(PATH, "custom", "modules", "img2.png")):
+
+def pruning():
+    crop_tk = tkinter.Tk()
+    crop_tk.geometry("630x135")
+    crop_tk.title("Збереження фото")
+    crop_tk.iconbitmap(os.path.join(PATH,"custom","phot_icon.ico"))
+    crop_tk["bg"] = "gray58"
+
+
+def resolution_get(info = os.path.join(PATH, "custom", "modules", "img.png")):
+    global res_pattern
+    res_pattern = re.search(r'([0-9]+)', input_res.get())
+    img_open = Image.open(info)
+    res_img = img_open.resize((int(res_pattern.group(0)),int(res_pattern.group(1))))
+    res_img.save(os.path.join(PATH, "custom", "modules", "img4.png"), "PNG")
+
+
+def resolution_preview(info = os.path.join(PATH, "custom", "modules", "img4.png")):
+    global res_pattern
+    res_pattern = re.search(r'([0-9]+)', input_res.get())
     res_w = tkinter.Tk()
-    res_w.geometry("400x150")
+    res_w.geometry(f"{int(res_pattern.group(0)) + 10}"+'x'+f"{int(res_pattern.group(1)) + 10}")
     res_w.title("Зміна роздільної здатності")
     res_w.iconbitmap(os.path.join(PATH,"custom","phot_icon.ico"))
     res_w["bg"] = "gray58"
-
-    input_res = tkinter.Entry(res_w)
-    input_res.pack(side = "top", anchor='ne')
-    res = input_res.get()
-    pattern = re.match(r'([0-9]+)', res)
-
+    resized_image = ImageTk.PhotoImage(Image.open(os.path.join(PATH, "custom", "modules", "img4.png")), master = res_w)
+    res_view = tkinter.Label(res_w,image=resized_image)
+    res_view.pack()
     res_w.mainloop()
