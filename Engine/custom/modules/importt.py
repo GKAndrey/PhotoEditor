@@ -10,6 +10,7 @@ from tkinter import ttk
 from tkinter import filedialog
 from tkinter import messagebox
 import time
+import random
 
 
 def info_and_resize_img(file_path):
