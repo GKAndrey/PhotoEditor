@@ -148,7 +148,7 @@ def info_and_resize_img(file_path):
     img_open = Image.open(file_path)
     w1 = img_open.width
     h1 = img_open.height
-    while w1 > 1280:
+    while w1 > 800:
         w1 = w1 // 2
         h1 = h1 // 2
     while h1 > 720:
@@ -263,10 +263,11 @@ def resolution_preview(info = os.path.join(PATH, "custom", "modules", "img4.png"
 def pruning1():
     crop_img = Image.open(os.path.join(PATH, "custom", "modules", "img.png"))
     crop_tk = tkinter.Tk()
-    crop_tk.geometry(f"{crop_img.size[0] + 10}"+'x'+f"{crop_img.size[1] + 10}")
+    crop_tk.geometry(f"{crop_img.size[0] + 10}x{crop_img.size[1] + 10}")
     crop_tk.title("Збереження світлини")
     crop_tk.iconbitmap(os.path.join(PATH,"custom","phot_icon.ico"))
     crop_tk["bg"] = "gray58"
+    ex1 = Ex(master = crop_tk, path = os.path.join(PATH,"custom", "modules", "img.png"), flag = False)
     crop_tk.mainloop()
 
 def rotate_img_left(info = os.path.join(PATH, "custom", "modules", "img3.png")):

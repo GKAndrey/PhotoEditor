@@ -31,16 +31,18 @@ crop_b1 = tkinter.Button(master = menu,
                         width = 25,
                         height= 2,
                         command = pruning1,
-                        bg = "turquoise",
-                        font = (os.path.join(PATH, "custom", "modules", "angrybirds-regular3.ttf"), 12))
+                        bg = "PaleTurquoise3",
+                        font = (os.path.join(PATH, "custom", "modules", "angrybirds-regular3.ttf"), 12),
+                        fg = "#191970")
 crop_b1.grid(row = 2, column = 0, padx = 6, pady = 7, sticky="nw")
 
 crop_b2 = tkinter.Button(master = menu,
-                        text = 'Вставити текст на свіtлину',
+                        text = 'Вставити текст на світлину',
                         width = 25,
                         height= 2,
                         command = None,
-                        bg = "turquoise",
+                        bg = "PaleTurquoise3",
+                        fg = "#191970",
                         font = (os.path.join(PATH, "custom", "modules", "angrybirds-regular3.ttf"), 12))
 crop_b2.grid(row = 3, column = 0, padx=6, pady=7, sticky="nw")
 
@@ -55,7 +57,8 @@ bl_w = tkinter.Checkbutton(text="Чорно-білий",
                            width = 20,
                            height= 2,
                            font=(os.path.join(PATH, "custom", "modules", "angrybirds-regular3.ttf"), 13),
-                           bg = "turquoise")
+                           bg = "PaleTurquoise3",
+                           fg = "#191970",)
 bl_w.grid(row = 5, column = 0, padx=6, pady=7, sticky="sw")
 mirr = tkinter.Checkbutton(text="Відзеркалити",
                            variable=mirr_w,
@@ -63,7 +66,8 @@ mirr = tkinter.Checkbutton(text="Відзеркалити",
                            width = 20,
                            height= 2,
                            font=(os.path.join(PATH, "custom", "modules", "angrybirds-regular3.ttf"), 13),
-                           bg = "turquoise")
+                           bg = "PaleTurquoise3",
+                           fg = "#191970")
 mirr.grid(row = 6, column = 0, padx=6, pady=7, sticky="sw")
 blur = tkinter.Checkbutton(text="Розмилення",
                            variable=blur_w,
@@ -71,7 +75,8 @@ blur = tkinter.Checkbutton(text="Розмилення",
                            width = 20,
                            height= 2,
                            font=(os.path.join(PATH, "custom", "modules", "angrybirds-regular3.ttf"), 13),
-                           bg = "turquoise")
+                           bg = "PaleTurquoise3",
+                           fg = "#191970",)
 blur.grid(row = 7, column = 0, padx=6, pady=7, sticky="sw")
 
 rotate_b1 = tkinter.Button(master = menu,
@@ -79,7 +84,8 @@ rotate_b1 = tkinter.Button(master = menu,
                         width = 25,
                         height= 2,
                         command = rotate_img_left,
-                        bg = "turquoise",
+                        bg = "PaleTurquoise3",
+                        fg = "#191970",
                         font = (os.path.join(PATH, "custom", "modules", "angrybirds-regular3.ttf"), 12))
 rotate_b1.grid(row = 7, column = 1, padx = 6, pady = 7, sticky="nw")
 
@@ -89,7 +95,8 @@ rotate_b2 = tkinter.Button(master = menu,
                         width = 25,
                         height= 2,
                         command = rotate_img_right,
-                        bg = "turquoise")
+                        bg = "PaleTurquoise3",
+                        fg = "#191970",)
 rotate_b2.grid(row = 7, column = 2, padx=6, pady=7, sticky="nw")
 # Отображение картинки
 try:

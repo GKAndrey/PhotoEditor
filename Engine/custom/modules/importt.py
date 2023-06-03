@@ -31,7 +31,7 @@ def info_and_resize_img(file_path):
 PATH = os.path.abspath(__file__ + '/../../..')
 
 class Ex():
-    def __init__(self, master, path = os.path.join(PATH, "custom", "modules", "img2.png")):
+    def __init__(self, master, path = os.path.join(PATH, "custom", "modules", "img2.png"), flag = True):
         try:
             pil_image = Image.open(path)
             self.width = pil_image.width
@@ -39,12 +39,17 @@ class Ex():
             self.image_sprite = tkinter.Label(master=master, image=self.image)
         except:
             self.image_sprite = tkinter.Label(menu)
-        self.image_sprite.place(x = 1280-self.width, y=0)
+        if flag:
+            self.image_sprite.place(x = 1280-self.width, y=0)
+        else:
+            self.image_sprite.grid(column=0,row=0)
     def update_photo(self, path=os.path.join(PATH, "custom", "modules", "img2.png")):
         pil_image = Image.open(path)
         self.image = ImageTk.PhotoImage(pil_image)
         self.image_sprite["image"] = self.image
         self.image_sprite.image = self.image
+        self.width = pil_image.width
+        self.image_sprite.place(x = 1280-self.width, y=0)
 
 
 menu = tkinter.Tk()
