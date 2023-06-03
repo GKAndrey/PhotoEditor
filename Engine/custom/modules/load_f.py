@@ -65,11 +65,11 @@ def save_img():
         if save_path:
             try:
                 colorist(os.path.join(PATH, "custom", "modules", "img.png"), False)
-                try:
+                if input_res.get() != "":
                     resolution_get(os.path.join(PATH, "custom", "modules", "img3.png"))
-                except:
-                    pass
-                img_open = Image.open(os.path.join(PATH, "custom", "modules", "img4.png"))
+                    img_open = Image.open(os.path.join(PATH, "custom", "modules", "img4.png"))
+                else:
+                    img_open = Image.open(os.path.join(PATH, "custom", "modules", "img3.png"))
                 img_open.save(save_path)
             except ValueError:
                 messagebox.showerror("Критична помилка!", "Помилковий тип файлу!")
@@ -146,7 +146,15 @@ def save_img():
 
 def info_and_resize_img(file_path):
     img_open = Image.open(file_path)
-    img_resize = img_open.resize((720, 480))
+    w1 = img_open.width
+    h1 = img_open.height
+    while w1 > 1280:
+        w1 = w1 // 2
+        h1 = h1 // 2
+    while h1 > 720:
+        w1 = w1 // 2
+        h1 = h1 // 2
+    img_resize = img_open.resize((w1, h1))
     img_resize.save(os.path.join(PATH, "custom", "modules", "img2.png"))
     img_resize = Image.open(os.path.join(PATH, "custom", "modules", "img2.png"))
     img_info = {
@@ -178,7 +186,7 @@ def info_foto(info):
                                    width = 250,
                                    text_color="Black",
                                    text_font=(os.path.join(PATH, "custom", "modules", "angrybirds-regular3.ttf"), 13),)
-    label.place(x=0,y=0)
+    label.grid(row = 0, column = 0, padx=7, pady=20,  sticky="nw")
 
 # bl_w_w   mirr_w   blur_w
 def colorist(info = os.path.join(PATH, "custom", "modules", "img2.png"), flg = 1):
@@ -201,6 +209,11 @@ def colorist(info = os.path.join(PATH, "custom", "modules", "img2.png"), flg = 1
         img_open.save(os.path.join(PATH, "custom", "modules", "img3.png"))
         img_open = Image.open(os.path.join(PATH, "custom", "modules", "img3.png"))
         flag = True
+    if rotate != 0:
+        img_open = Image.open(os.path.join(PATH, "custom", "modules", "img3.png"))
+        img_open = img_open.rotate(rotate)
+        img_open.save(os.path.join(PATH, "custom", "modules", "img3.png"))
+        flag = True
     if flg:
         if flag:
             ex.update_photo(os.path.join(PATH, "custom", "modules", "img3.png"))
@@ -217,14 +230,6 @@ def convertor(info, name, format):
         img_open.save(f"{name}.jpeg", "JPEG")
     elif format == 3:
         img_open.save(f"{name}.jpg", "JPG")
-
-
-def pruning():
-    crop_tk = tkinter.Tk()
-    crop_tk.geometry("630x135")
-    crop_tk.title("Збереження фото")
-    crop_tk.iconbitmap(os.path.join(PATH,"custom","phot_icon.ico"))
-    crop_tk["bg"] = "gray58"
 
 
 def resolution_get(info = os.path.join(PATH, "custom", "modules", "img.png")):
@@ -254,3 +259,28 @@ def resolution_preview(info = os.path.join(PATH, "custom", "modules", "img4.png"
     res_view.pack()
     btn_res_preview.config(state='disabled')
     res_w.mainloop()
+
+def pruning1():
+    crop_img = Image.open(os.path.join(PATH, "custom", "modules", "img.png"))
+    crop_tk = tkinter.Tk()
+    crop_tk.geometry(f"{crop_img.size[0] + 10}"+'x'+f"{crop_img.size[1] + 10}")
+    crop_tk.title("Збереження світлини")
+    crop_tk.iconbitmap(os.path.join(PATH,"custom","phot_icon.ico"))
+    crop_tk["bg"] = "gray58"
+    crop_tk.mainloop()
+
+def rotate_img_left(info = os.path.join(PATH, "custom", "modules", "img3.png")):
+    global rotate
+    if rotate == 0:
+        rotate = 90
+    else:
+        rotate += 90
+    colorist()
+
+def rotate_img_right(info = os.path.join(PATH, "custom", "modules", "img3.png")):
+    global rotate
+    if rotate == 0:
+        rotate = 270
+    else:
+        rotate -= 90
+    colorist()

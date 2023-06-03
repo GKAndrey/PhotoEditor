@@ -1,6 +1,6 @@
 import PIL
 from PIL.ExifTags import TAGS
-from PIL import Image, ImageTk, ImageFilter
+from PIL import Image, ImageTk, ImageFilter, ImageDraw
 import customtkinter
 import os
 import requests
@@ -34,11 +34,12 @@ class Ex():
     def __init__(self, master, path = os.path.join(PATH, "custom", "modules", "img2.png")):
         try:
             pil_image = Image.open(path)
+            self.width = pil_image.width
             self.image = ImageTk.PhotoImage(pil_image)
             self.image_sprite = tkinter.Label(master=master, image=self.image)
         except:
             self.image_sprite = tkinter.Label(menu)
-        self.image_sprite.pack(anchor=tkinter.NE)
+        self.image_sprite.place(x = 1280-self.width, y=0)
     def update_photo(self, path=os.path.join(PATH, "custom", "modules", "img2.png")):
         pil_image = Image.open(path)
         self.image = ImageTk.PhotoImage(pil_image)
@@ -48,6 +49,7 @@ class Ex():
 
 menu = tkinter.Tk()
 
+rotate = 0
 bl_w_w = tkinter.IntVar()
 mirr_w = tkinter.IntVar()
 blur_w = tkinter.IntVar()
