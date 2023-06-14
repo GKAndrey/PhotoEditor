@@ -1,6 +1,6 @@
 import PIL
 from PIL.ExifTags import TAGS
-from PIL import Image, ImageTk, ImageFilter, ImageDraw
+from PIL import Image, ImageTk, ImageFilter, ImageDraw, ImageFont
 import customtkinter
 import os
 import requests
@@ -9,6 +9,7 @@ import tkinter
 from tkinter import ttk
 from tkinter import filedialog
 from tkinter import messagebox
+from tkinter import font
 import time
 import random
 
@@ -59,4 +60,7 @@ bl_w_w = tkinter.IntVar()
 mirr_w = tkinter.IntVar()
 blur_w = tkinter.IntVar()
 
-ex = Ex(menu)
+try:
+    ex = Ex(menu)
+except:
+    pass

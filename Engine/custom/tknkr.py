@@ -21,7 +21,7 @@ main_menu.add_cascade(label="File", menu = file_menu)
 menu.config(menu=main_menu)
 menu.protocol("WM_DELETE_WINDOW", close_program)
 
-none_l0 = tkinter.Label(menu,
+none_l0 = tkinter.Label(menu, 
                        text = '',
                        bg = "lightskyblue4")
 none_l0.grid(row = 1, column = 0, padx=6, pady=25, sticky="nw")
@@ -32,7 +32,7 @@ crop_b1 = tkinter.Button(master = menu,
                         height= 2,
                         command = pruning1,
                         bg = "PaleTurquoise3",
-                        font = (os.path.join(PATH, "custom", "modules", "angrybirds-regular3.ttf"), 12),
+                        font = ("Helvetica", 12),
                         fg = "#191970")
 crop_b1.grid(row = 2, column = 0, padx = 6, pady = 7, sticky="nw")
 
@@ -43,7 +43,7 @@ crop_b2 = tkinter.Button(master = menu,
                         command = None,
                         bg = "PaleTurquoise3",
                         fg = "#191970",
-                        font = (os.path.join(PATH, "custom", "modules", "angrybirds-regular3.ttf"), 12))
+                        font = ("Helvetica", 12))
 crop_b2.grid(row = 3, column = 0, padx=6, pady=7, sticky="nw")
 
 none_l = tkinter.Label(menu,
@@ -56,7 +56,7 @@ bl_w = tkinter.Checkbutton(text="Чорно-білий",
                            command = colorist,
                            width = 20,
                            height= 2,
-                           font=(os.path.join(PATH, "custom", "modules", "angrybirds-regular3.ttf"), 13),
+                           font=("Helvetica", 13),
                            bg = "PaleTurquoise3",
                            fg = "#191970",)
 bl_w.grid(row = 5, column = 0, padx=6, pady=7, sticky="sw")
@@ -65,7 +65,7 @@ mirr = tkinter.Checkbutton(text="Відзеркалити",
                            command = colorist,
                            width = 20,
                            height= 2,
-                           font=(os.path.join(PATH, "custom", "modules", "angrybirds-regular3.ttf"), 13),
+                           font=("Helvetica", 13),
                            bg = "PaleTurquoise3",
                            fg = "#191970")
 mirr.grid(row = 6, column = 0, padx=6, pady=7, sticky="sw")
@@ -74,7 +74,7 @@ blur = tkinter.Checkbutton(text="Розмилення",
                            command = colorist,
                            width = 20,
                            height= 2,
-                           font=(os.path.join(PATH, "custom", "modules", "angrybirds-regular3.ttf"), 13),
+                           font=("Helvetica", 13),
                            bg = "PaleTurquoise3",
                            fg = "#191970",)
 blur.grid(row = 7, column = 0, padx=6, pady=7, sticky="sw")

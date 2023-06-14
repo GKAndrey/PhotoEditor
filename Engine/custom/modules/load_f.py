@@ -267,7 +267,9 @@ def pruning1():
     crop_tk.title("Збереження світлини")
     crop_tk.iconbitmap(os.path.join(PATH,"custom","phot_icon.ico"))
     crop_tk["bg"] = "gray58"
-    ex1 = Ex(master = crop_tk, path = os.path.join(PATH,"custom", "modules", "img.png"), flag = False)
+    resized_image = ImageTk.PhotoImage(crop_img, master = crop_tk)
+    res_view = tkinter.Label(crop_tk,image=resized_image)
+    res_view.pack()
     crop_tk.mainloop()
 
 def rotate_img_left(info = os.path.join(PATH, "custom", "modules", "img3.png")):
@@ -285,3 +287,24 @@ def rotate_img_right(info = os.path.join(PATH, "custom", "modules", "img3.png"))
     else:
         rotate -= 90
     colorist()
+
+color = (255,0,0)
+def text_on_img(x, y, text, color, font = ImageFont.truetype("arial", size=50), info = os.path.join(PATH, "custom", "modules", "img3.png")):
+    img_open = Image.open(info)
+
+    text_img_tk = tkinter.Tk()
+    text_img_tk.geometry(f"{img_open.size[0] + 200}x{img_open.size[1] + 10}")
+    text_img_tk.title("Вставлення тексту")
+    text_img_tk.iconbitmap(os.path.join(PATH,"custom","phot_icon.ico"))
+    text_img_tk["bg"] = "gray58"
+    
+    text_write = ImageDraw.Draw(img_open)
+    text_write.text((x, y), text, font = font, fill = color)
+    
+    text_img_prev = ImageTk.PhotoImage(img_open, text_img_tk)
+    text_img_prev1 = tkinter.Label(text_img_tk, text_img_prev)
+    text_img_prev1.pack()
+    
+    text_img_tk.mainloop()
+    
+text_on_img(0,0, "", color)
