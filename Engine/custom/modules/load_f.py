@@ -6,31 +6,45 @@ except ModuleNotFoundError:
     except ModuleNotFoundError:
         from Engine.custom.modules.importt import *
 
-
+# ! Вспомогательная часть кода с закрытием окон.
 
 def close_program():
     menu.destroy()
-    try:
-        save_tk.destroy()
-    except:
-        pass
+    tks = [save_tk, text_on_img_root, crop_tk]
+    for i in tks:
+        try:
+            i.destroy()
+        except:
+            pass
+
+# ! Локальная выгрузка картинки
 
 def local_select_img():
     image_formats = [("Зображення", "*.jpg;*.jpeg;*.png")]
     file_path = filedialog.askopenfilename(filetypes=image_formats, title="Оберіть зображення")
-    with open(os.path.join(PATH, "custom", "modules", "img.png"), "wb") as f:
-        try:
-            with open(file_path, "rb") as g:
-                f.write(g.read())
-            return_info = (file_path, info_and_resize_img(file_path))
-            ex.update_photo()
-            return return_info
-        except FileNotFoundError:
-            pass
+    try:
+        os.remove(os.path.join(PATH, "custom", "modules", "img3.png"))
+    except:
+        pass   
+    if file_path:
+        with open(os.path.join(PATH, "custom", "modules", "img.png"), "wb") as f:
+            try:
+                with open(file_path, "rb") as g:
+                    f.write(g.read())
+                return_info = (file_path, info_and_resize_img(file_path))
+                ex.update_photo()
+                return return_info
+            except FileNotFoundError:
+                pass
 
+# ! Выгрузка картинки по URL
 
 def web_select_img():
     dialog = customtkinter.CTkDialog(text="Введіть URL зображення:", title="Оберіть зображення")
+    try:
+        os.remove(os.path.join(PATH, "custom", "modules", "img3.png"))
+    except:
+        pass
     URL_img = dialog.get_input()
     if URL_img != '':
         try:
@@ -55,7 +69,7 @@ def web_select_img():
     else:
         messagebox.showerror("Критична помилка!", "URL Адресса відсутня!")
 
-
+# ! Сохранение картинки
 
 def save_img():
     global save_tk, btn_save, save_file_v, save_input, input_res, btn_res_preview
@@ -99,32 +113,27 @@ def save_img():
     save_tk.title("Збереження фото")
     save_tk.iconbitmap(os.path.join(PATH,"custom","phot_icon.ico"))
     save_tk["bg"] = "gray58"
-
     save_input = tkinter.Entry(save_tk,
                                width=35,
                                font=(os.path.join(PATH, "custom", "modules", "angrybirds-regular3.ttf"), 12))
     save_input.grid(row=0, column=0, sticky='w', pady=5, padx=10)
     save_input.focus()
-
     input_res = tkinter.Entry(save_tk,
                               width=35,
                               font=(os.path.join(PATH, "custom", "modules", "angrybirds-regular3.ttf"), 12))
     input_res.grid(row=1, column=0, sticky='w', pady=5, padx=10)
-
     btn_save_path = tkinter.Button(save_tk,
                                    text = "Обрати шлях на комп'ютері",
                                    width = 30,
                                    command = save_file_Path,
                                    font = (os.path.join(PATH, "custom", "modules", "angrybirds-regular3.ttf"), 12))
     btn_save_path.grid(row=0, column=1, pady=5, padx=10)
-
     btn_res = tkinter.Button(save_tk,
                              text='Змінити роздільну здатність',
                              width=30,
                              command=resolution_get,
                              font=(os.path.join(PATH, "custom", "modules", "angrybirds-regular3.ttf"), 12))
     btn_res.grid(row=1, column=1, pady=5, padx=10)
-
     btn_res_preview = tkinter.Button(save_tk,
                                      text='Переглянути результат маcштабування',
                                      width= 35,
@@ -132,17 +141,15 @@ def save_img():
                                      font=(os.path.join(PATH, "custom", "modules", "angrybirds-regular3.ttf"), 12))
     btn_res_preview.config(state='disabled')
     btn_res_preview.grid(row=2, column=0, pady=5, padx=9)
-
     btn_save = tkinter.Button(save_tk,
                               text="Зберегти",
                               width = 30,
                               command=save_file,
                               font=(os.path.join(PATH, "custom", "modules", "angrybirds-regular3.ttf"), 12))
     btn_save.grid(row=2, column=1, pady=5, padx=10)
-    
     save_tk.mainloop()
 
-
+# ! Распределение размеров для отображения в окне
 
 def info_and_resize_img(file_path):
     img_open = Image.open(file_path)
@@ -168,7 +175,7 @@ def info_and_resize_img(file_path):
     info_foto(return_info)
     return return_info
 
-
+# ! Информация про картинку
 
 def info_foto(info):
     if "\\" in info[0]["Назва світлини"]:
@@ -187,6 +194,8 @@ def info_foto(info):
                                    text_color="Black",
                                    text_font=(os.path.join(PATH, "custom", "modules", "angrybirds-regular3.ttf"), 13),)
     label.grid(row = 0, column = 0, padx=7, pady=20,  sticky="nw")
+
+# ! Наложение эффектов
 
 # bl_w_w   mirr_w   blur_w
 def colorist(info = os.path.join(PATH, "custom", "modules", "img2.png"), flg = 1):
@@ -219,18 +228,20 @@ def colorist(info = os.path.join(PATH, "custom", "modules", "img2.png"), flg = 1
             ex.update_photo(os.path.join(PATH, "custom", "modules", "img3.png"))
         else:
             ex.update_photo()
-
     # ImageFilter.BoxBlur()
 
-def convertor(info, name, format):
-    img_open = Image.open(info[0])
-    if format == 1:
-        img_open.save(f"{name}.png", "PNG")
-    elif format == 2:
-        img_open.save(f"{name}.jpeg", "JPEG")
-    elif format == 3:
-        img_open.save(f"{name}.jpg", "JPG")
+# ! Конвентарция разрешений
 
+# def convertor(info, name, format):
+#     img_open = Image.open(info[0])
+#     if format == 1:
+#         img_open.save(f"{name}.png", "PNG")
+#     elif format == 2:
+#         img_open.save(f"{name}.jpeg", "JPEG")
+#     elif format == 3:
+#         img_open.save(f"{name}.jpg", "JPG")
+
+# ! Изменение размеров
 
 def resolution_get(info = os.path.join(PATH, "custom", "modules", "img.png")):
     global res_pattern, btn_res_preview
@@ -246,6 +257,7 @@ def resolution_get(info = os.path.join(PATH, "custom", "modules", "img.png")):
     except AttributeError:
         messagebox.showerror("Критична помилка!", "Помилкa вводу розміру!")
 
+# ! Тестовое отображение картинки
 
 def resolution_preview(info = os.path.join(PATH, "custom", "modules", "img4.png")):
     res_img = Image.open(os.path.join(PATH, "custom", "modules", "img4.png"))
@@ -260,7 +272,16 @@ def resolution_preview(info = os.path.join(PATH, "custom", "modules", "img4.png"
     btn_res_preview.config(state='disabled')
     res_w.mainloop()
 
+# ! Обрезка photo
+
 def pruning1():
+    global crop_tk, FLAG_POS1, FLAG_POS2, pos1, pos2
+    try:
+        crop_tk.destroy()
+    except:
+        pass
+    FLAG_POS1 = False
+    FLAG_POS2 = False
     crop_img = Image.open(os.path.join(PATH, "custom", "modules", "img.png"))
     crop_tk = tkinter.Tk()
     crop_tk.geometry(f"{crop_img.size[0]}x{crop_img.size[1]}")
@@ -272,16 +293,63 @@ def pruning1():
     res_view = tkinter.Label(crop_tk,image=resized_image)
     res_view.place(x=0,y=0)
     
-    pos1 = tkinter.Button(master = crop_tk, text = "1", font = ("Helvetica", 12), bg = "Black", fg = "white", width = 1, height = 1)
+    pos1 = tkinter.Button(master = crop_tk, text = "1", font = ("Helvetica", 12), bg = "Black", fg = "white", width = 1, height = 1, command = but_pos1)
     pos1.place(x=0, y=0)
     
-    pos2 = tkinter.Button(master = crop_tk, text = "2", font = ("Helvetica", 12), bg = "Black", fg = "white", width = 1, height = 1)
+    pos2 = tkinter.Button(master = crop_tk, text = "2", font = ("Helvetica", 12), bg = "Black", fg = "white", width = 1, height = 1, command = but_pos2)
     pos2.place(x=crop_img.size[0]-100, y=crop_img.size[1]-100)
     
-    safe_crop = tkinter.Button(master = crop_tk, text = "Зберегти", font = ("Helvetica", 12), bg = "Black", fg = "white", width = 10, height = 1)
+    safe_crop = tkinter.Button(master = crop_tk, text = "Зберегти", font = ("Helvetica", 12), bg = "Black", fg = "white", width = 10, height = 1, command = but_Save_pos)
     safe_crop.place(x=crop_img.size[0]-100, y=0)
     
     crop_tk.mainloop()
+
+    # * Вспомогательные функции ^
+
+    def but_pos1():
+        global FLAG_POS1
+        if FLAG_POS1:
+            FLAG_POS1 = False
+            crop_tk.unbind('<Motion>')
+        else:
+            FLAG_POS1 = True
+            crop_tk.bind('<Motion>', bld_b1)
+
+    def but_pos2():
+        global FLAG_POS2
+        if FLAG_POS2:
+            FLAG_POS2 = False
+            crop_tk.unbind('<Motion>')
+        else:
+            FLAG_POS2 = True
+            crop_tk.bind('<Motion>', bld_b2)
+
+    def but_Save_pos():
+        global crop_tk, pos1, pos2
+        x1 = pos1.winfo_x()
+        y1 = pos1.winfo_y()
+        x2 = pos2.winfo_x()
+        y2 = pos2.winfo_y()
+        
+        crop_tk.destroy()
+
+    # ? Вспомогательные функции вспомогательных функций
+
+    def bld_b1(event):
+        global pos1, tick
+        x = event.x
+        y = event.y
+        pos1.place(x=x-5, y=y-5)
+        
+
+    def bld_b2(event):
+        global pos2, tick
+        x = event.x
+        y = event.y
+        pos2.place(x=x-5, y=y-5)
+
+
+# ! Развороты
 
 def rotate_img_left(info = os.path.join(PATH, "custom", "modules", "img3.png")):
     global rotate
@@ -299,22 +367,90 @@ def rotate_img_right(info = os.path.join(PATH, "custom", "modules", "img3.png"))
         rotate -= 90
     colorist()
 
-# color = (255,0,0)
-# def text_on_img(x, y, text, color, font = ImageFont.truetype("arial", size=50), info = os.path.join(PATH, "custom", "modules", "img3.png")):
-#     global text_img_prev, text_img_prev1, img_opens3, text_img_tk
-#     img_opens3 = Image.open(info)
+# ! Вставка текста
 
-#     text_img_tk = tkinter.Tk()
-#     text_img_tk.geometry(f"{img_opens3.size[0] +50}x{img_opens3.size[1] + 10}")
-#     text_img_tk.title("Вставлення тексту")
-#     text_img_tk.iconbitmap(os.path.join(PATH,"custom","phot_icon.ico"))
-#     text_img_tk["bg"] = "gray58"
+def text_on_img(info = os.path.join(PATH, "custom", "modules", "img3.png")):
+    global text_on_img_root
+    try:
+        text_on_img_root.destroy()
+    except:
+        pass
+    try:
+        img_open = Image.open(info)
+    except:
+        img_open = Image.open(os.path.join(PATH, "custom", "modules", "img2.png"))
+        
+    text_on_img_root = tkinter.Tk()
+    text_on_img_root.title("Текст на зображенні")
+    text_on_img_root.geometry(f"{img_open.size[0]+300}x{img_open.size[1]}")
+    text_on_img_root.resizable(False, False)
+    text_on_img_root["bg"] = "lightskyblue4"
     
-#     text_write = ImageDraw.Draw(img_opens3)
-#     text_write.text((x, y), text, font = font, fill = color)
+    tk_img_open = ImageTk.PhotoImage(img_open, master = text_on_img_root)
+    image_frame = tkinter.Label(master = text_on_img_root, image=tk_img_open)
+    image_frame.pack(side=tkinter.RIGHT)
     
-#     ex9 = Ex(text_img_tk, info, False)
+    def text_getting():
+        text = text_on_img_text.get()
+        try:
+            x = int(text_on_img_x.get())
+            y = int(text_on_img_y.get())
+            color_r = int(text_on_img_color_r.get())
+            color_g = int(text_on_img_color_g.get())
+            color_b = int(text_on_img_color_b.get())
+            color_img = (color_r,color_g,color_b)
+            
+            text_img = ImageDraw.Draw(img_open)
+            try:
+                text_img.text((x,y), text, fill=color_img)
+            except:
+                messagebox.showerror("Помилка кольору!", "Через чорно-білий фільтр кольори недоступні!")
+                text_img.text((x,y), text)
+        except:
+            messagebox.showerror("Помилка кольору!", "Треба заповнити всі поля!")
+        
+        img_open.save(os.path.join(PATH, "custom", "modules", "img3.png"))
+        ex.update_photo(os.path.join(PATH, "custom", "modules", "img3.png"))
+        
+        text_on_img_root.destroy()
+        
+        
+    text_on_img_text_l = tkinter.Label(master = text_on_img_root, text="Введіть текст для вставки у світлину", bg = "PaleTurquoise3", fg = "#191970", font=("Helvetica", 12))
+    text_on_img_text_l.place(x=0,y=0) 
+        
+    text_on_img_text = tkinter.Entry(text_on_img_root)
+    text_on_img_text.place(x=0,y=25)
     
-#     text_img_tk.mainloop()
+    text_on_img_x_l = tkinter.Label(master = text_on_img_root, text="Введіть x координату", bg = "PaleTurquoise3", fg = "#191970", font=("Helvetica", 12))
+    text_on_img_x_l.place(x=0,y=50)
     
-# text_on_img(0,0, "hei tostyc", color)
+    text_on_img_x = tkinter.Entry(text_on_img_root)
+    text_on_img_x.place(x=0,y=75)
+    text_on_img_x.insert(0, "0")
+    
+    text_on_img_y_l = tkinter.Label(master = text_on_img_root, text="Введіть y координату", bg = "PaleTurquoise3", fg = "#191970", font=("Helvetica", 12))
+    text_on_img_y_l.place(x=0,y=100)
+    
+    text_on_img_y = tkinter.Entry(text_on_img_root)
+    text_on_img_y.place(x=0,y=125)
+    text_on_img_y.insert(0, "0")
+    
+    text_on_img_color_l = tkinter.Label(master = text_on_img_root, text="Введіть колір (RGB)", bg = "PaleTurquoise3", fg = "#191970", font=("Helvetica", 12))
+    text_on_img_color_l.place(x=0,y=150)
+    
+    text_on_img_color_r = tkinter.Entry(text_on_img_root, width=5)
+    text_on_img_color_r.place(x=0,y=175)
+    text_on_img_color_r.insert(0, "0")
+    
+    text_on_img_color_g = tkinter.Entry(text_on_img_root, width=5)
+    text_on_img_color_g.place(x=38,y=175)
+    text_on_img_color_g.insert(0, "0")
+    
+    text_on_img_color_b = tkinter.Entry(text_on_img_root, width=5)
+    text_on_img_color_b.place(x=76,y=175)
+    text_on_img_color_b.insert(0, "0")
+    
+    text_on_img_submitt = tkinter.Button(text_on_img_root, text="Вставити текст на зображення", command=text_getting, bg = "PaleTurquoise3", fg = "#191970", font=("Helvetica", 12))
+    text_on_img_submitt.place(x=0,y=200)
+    
+    text_on_img_root.mainloop()

@@ -52,9 +52,15 @@ class Ex():
         self.width = pil_image.width
         self.image_sprite.place(x = 1280-self.width, y=0)
 
-
+try:
+    os.remove(os.path.join(PATH, "custom", "modules", "img3.png"))
+except:
+    pass
 menu = tkinter.Tk()
 
+save_tk = 0
+text_on_img_root = 0
+crop_tk = 0
 rotate = 0
 bl_w_w = tkinter.IntVar()
 mirr_w = tkinter.IntVar()

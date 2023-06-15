@@ -40,7 +40,7 @@ crop_b2 = tkinter.Button(master = menu,
                         text = 'Вставити текст на світлину',
                         width = 25,
                         height= 2,
-                        command = None,
+                        command = text_on_img,
                         bg = "PaleTurquoise3",
                         fg = "#191970",
                         font = ("Helvetica", 12))
