@@ -263,13 +263,24 @@ def resolution_preview(info = os.path.join(PATH, "custom", "modules", "img4.png"
 def pruning1():
     crop_img = Image.open(os.path.join(PATH, "custom", "modules", "img.png"))
     crop_tk = tkinter.Tk()
-    crop_tk.geometry(f"{crop_img.size[0] + 10}x{crop_img.size[1] + 10}")
-    crop_tk.title("Збереження світлини")
+    crop_tk.geometry(f"{crop_img.size[0]}x{crop_img.size[1]}")
+    crop_tk.title("Оберiть область вирiзу, перемiстив позначки")
     crop_tk.iconbitmap(os.path.join(PATH,"custom","phot_icon.ico"))
+    crop_tk.resizable(False, False)
     crop_tk["bg"] = "gray58"
     resized_image = ImageTk.PhotoImage(crop_img, master = crop_tk)
     res_view = tkinter.Label(crop_tk,image=resized_image)
-    res_view.pack()
+    res_view.place(x=0,y=0)
+    
+    pos1 = tkinter.Button(master = crop_tk, text = "1", font = ("Helvetica", 12), bg = "Black", fg = "white", width = 1, height = 1)
+    pos1.place(x=0, y=0)
+    
+    pos2 = tkinter.Button(master = crop_tk, text = "2", font = ("Helvetica", 12), bg = "Black", fg = "white", width = 1, height = 1)
+    pos2.place(x=crop_img.size[0]-100, y=crop_img.size[1]-100)
+    
+    safe_crop = tkinter.Button(master = crop_tk, text = "Зберегти", font = ("Helvetica", 12), bg = "Black", fg = "white", width = 10, height = 1)
+    safe_crop.place(x=crop_img.size[0]-100, y=0)
+    
     crop_tk.mainloop()
 
 def rotate_img_left(info = os.path.join(PATH, "custom", "modules", "img3.png")):
@@ -288,23 +299,22 @@ def rotate_img_right(info = os.path.join(PATH, "custom", "modules", "img3.png"))
         rotate -= 90
     colorist()
 
-color = (255,0,0)
-def text_on_img(x, y, text, color, font = ImageFont.truetype("arial", size=50), info = os.path.join(PATH, "custom", "modules", "img3.png")):
-    img_open = Image.open(info)
+# color = (255,0,0)
+# def text_on_img(x, y, text, color, font = ImageFont.truetype("arial", size=50), info = os.path.join(PATH, "custom", "modules", "img3.png")):
+#     global text_img_prev, text_img_prev1, img_opens3, text_img_tk
+#     img_opens3 = Image.open(info)
 
-    text_img_tk = tkinter.Tk()
-    text_img_tk.geometry(f"{img_open.size[0] + 200}x{img_open.size[1] + 10}")
-    text_img_tk.title("Вставлення тексту")
-    text_img_tk.iconbitmap(os.path.join(PATH,"custom","phot_icon.ico"))
-    text_img_tk["bg"] = "gray58"
+#     text_img_tk = tkinter.Tk()
+#     text_img_tk.geometry(f"{img_opens3.size[0] +50}x{img_opens3.size[1] + 10}")
+#     text_img_tk.title("Вставлення тексту")
+#     text_img_tk.iconbitmap(os.path.join(PATH,"custom","phot_icon.ico"))
+#     text_img_tk["bg"] = "gray58"
     
-    text_write = ImageDraw.Draw(img_open)
-    text_write.text((x, y), text, font = font, fill = color)
+#     text_write = ImageDraw.Draw(img_opens3)
+#     text_write.text((x, y), text, font = font, fill = color)
     
-    text_img_prev = ImageTk.PhotoImage(img_open, text_img_tk)
-    text_img_prev1 = tkinter.Label(text_img_tk, text_img_prev)
-    text_img_prev1.pack()
+#     ex9 = Ex(text_img_tk, info, False)
     
-    text_img_tk.mainloop()
+#     text_img_tk.mainloop()
     
-text_on_img(0,0, "", color)
+# text_on_img(0,0, "hei tostyc", color)
