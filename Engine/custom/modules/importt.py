@@ -56,6 +56,10 @@ try:
     os.remove(os.path.join(PATH, "custom", "modules", "img3.png"))
 except:
     pass
+try:
+    os.remove(os.path.join(PATH, "custom", "modules", "img4.png"))
+except:
+    pass
 menu = tkinter.Tk()
 
 save_tk = 0

@@ -255,15 +255,18 @@ def colorist(info = os.path.join(PATH, "custom", "modules", "img2.png"), flg = 1
 def resolution_get(info = os.path.join(PATH, "custom", "modules", "img.png")):
     global res_pattern, btn_res_preview
     res_pattern = re.findall(r'([0-9]+)', input_res.get())
-    if input_res.get() != '':
-        pos1 = int(res_pattern[0])
-        pos2 = int(res_pattern[1])
-    img_open = Image.open(info)
     try:
-        res_img = img_open.resize((pos1, pos2))
-        res_img.save(os.path.join(PATH, "custom", "modules", "img4.png"), "PNG")
-        btn_res_preview.config(state='normal')
-    except AttributeError:
+        if input_res.get() != '':
+            pos1 = int(res_pattern[0])
+            pos2 = int(res_pattern[1])
+        img_open = Image.open(info)
+        try:
+            res_img = img_open.resize((pos1, pos2))
+            res_img.save(os.path.join(PATH, "custom", "modules", "img4.png"), "PNG")
+            btn_res_preview.config(state='normal')
+        except AttributeError:
+            messagebox.showerror("Критична помилка!", "Помилкa вводу розміру!")
+    except IndexError:
         messagebox.showerror("Критична помилка!", "Помилкa вводу розміру!")
 
 # ! Тестовое отображение картинки
@@ -420,10 +423,41 @@ def text_on_img(info = os.path.join(PATH, "custom", "modules", "img3.png")):
         text = text_on_img_text.get()
         try:
             x = int(text_on_img_x.get())
-            y = int(text_on_img_y.get())
+            if x >= img_open.size[0]:
+                x = img_open.size[0]
+            else:
+                x = int(text_on_img_x.get())
+                
+            y = int(text_on_img_y.get()) 
+            if y >= img_open.size[1]:
+                y = img_open.size[1]
+            else:
+                y = int(text_on_img_y.get())
+                
             color_r = int(text_on_img_color_r.get())
+            if color_r < 0:
+                color_r = 0
+            elif color_r > 254:
+                color_r = 255
+            else:
+                color_r = int(text_on_img_color_r.get())
+            
             color_g = int(text_on_img_color_g.get())
+            if color_g < 0:
+                color_g = 0
+            elif color_g > 254:
+                color_g = 255
+            else:
+                color_g = int(text_on_img_color_g.get())
+            
             color_b = int(text_on_img_color_b.get())
+            if color_b < 0:
+                color_b = 0
+            elif color_b > 254:
+                color_b = 255
+            else:
+                color_b = int(text_on_img_color_b.get())
+            
             color_img = (color_r,color_g,color_b)
             
             text_img = ImageDraw.Draw(img_open)
@@ -432,8 +466,8 @@ def text_on_img(info = os.path.join(PATH, "custom", "modules", "img3.png")):
             except:
                 messagebox.showerror("Помилка кольору!", "Через чорно-білий фільтр кольори недоступні!")
                 text_img.text((x,y), text)
-        except:
-            messagebox.showerror("Помилка кольору!", "Треба заповнити всі поля!")
+        except ValueError:
+            messagebox.showerror("Помилка вводу даних!", "Невірно заповнені поля!")
         
         img_open.save(os.path.join(PATH, "custom", "modules", "img3.png"))
         ex.update_photo(os.path.join(PATH, "custom", "modules", "img3.png"))
