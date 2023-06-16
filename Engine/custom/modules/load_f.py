@@ -73,6 +73,10 @@ def web_select_img():
 
 def save_img():
     global save_tk, btn_save, save_file_v, save_input, input_res, btn_res_preview
+    try:
+        save_tk.destroy
+    except:
+        pass
     def save_file():
         global save_path
         save_path = save_input.get()
@@ -85,6 +89,7 @@ def save_img():
                 else:
                     img_open = Image.open(os.path.join(PATH, "custom", "modules", "img3.png"))
                 img_open.save(save_path)
+                save_tk.destroy
             except ValueError:
                 messagebox.showerror("Критична помилка!", "Помилковий тип файлу!")
             except FileNotFoundError:
@@ -199,6 +204,10 @@ def info_foto(info):
 
 # bl_w_w   mirr_w   blur_w
 def colorist(info = os.path.join(PATH, "custom", "modules", "img2.png"), flg = 1):
+    try:
+        text_on_img_root.destroy()
+    except:
+        pass
     img_open = Image.open(info)
     img_open.save(os.path.join(PATH, "custom", "modules", "img3.png"))
     img_open = Image.open(os.path.join(PATH, "custom", "modules", "img3.png"))
@@ -262,12 +271,12 @@ def resolution_get(info = os.path.join(PATH, "custom", "modules", "img.png")):
 def resolution_preview(info = os.path.join(PATH, "custom", "modules", "img4.png")):
     res_img = Image.open(os.path.join(PATH, "custom", "modules", "img4.png"))
     res_w = tkinter.Tk()
-    res_w.geometry(f"{res_img.size[0] + 10}"+'x'+f"{res_img.size[1] + 10}")
+    res_w.geometry(f"{res_img.size[0] + 10}x{res_img.size[1] + 10}")
     res_w.title("Зміна роздільної здатності")
-    res_w.iconbitmap(os.path.join(PATH,"custom","phot_icon.ico"))
+    res_w.iconbitmap(os.path.join(PATH, "custom", "phot_icon.ico"))
     res_w["bg"] = "gray58"
     resized_image = ImageTk.PhotoImage(Image.open(os.path.join(PATH, "custom", "modules", "img4.png")), master = res_w)
-    res_view = tkinter.Label(res_w,image=resized_image)
+    res_view = tkinter.Label(res_w, image=resized_image)
     res_view.pack()
     btn_res_preview.config(state='disabled')
     res_w.mainloop()
@@ -276,6 +285,7 @@ def resolution_preview(info = os.path.join(PATH, "custom", "modules", "img4.png"
 
 def pruning1():
     global crop_tk, FLAG_POS1, FLAG_POS2, pos1, pos2
+    messagebox.showerror("Увага!", "Виправлення розміру неможливо вiдмiнити!")
     try:
         crop_tk.destroy()
     except:
@@ -293,17 +303,6 @@ def pruning1():
     res_view = tkinter.Label(crop_tk,image=resized_image)
     res_view.place(x=0,y=0)
     
-    pos1 = tkinter.Button(master = crop_tk, text = "1", font = ("Helvetica", 12), bg = "Black", fg = "white", width = 1, height = 1, command = but_pos1)
-    pos1.place(x=0, y=0)
-    
-    pos2 = tkinter.Button(master = crop_tk, text = "2", font = ("Helvetica", 12), bg = "Black", fg = "white", width = 1, height = 1, command = but_pos2)
-    pos2.place(x=crop_img.size[0]-100, y=crop_img.size[1]-100)
-    
-    safe_crop = tkinter.Button(master = crop_tk, text = "Зберегти", font = ("Helvetica", 12), bg = "Black", fg = "white", width = 10, height = 1, command = but_Save_pos)
-    safe_crop.place(x=crop_img.size[0]-100, y=0)
-    
-    crop_tk.mainloop()
-
     # * Вспомогательные функции ^
 
     def but_pos1():
@@ -323,7 +322,7 @@ def pruning1():
         else:
             FLAG_POS2 = True
             crop_tk.bind('<Motion>', bld_b2)
-
+    
     def but_Save_pos():
         global crop_tk, pos1, pos2
         x1 = pos1.winfo_x()
@@ -331,22 +330,45 @@ def pruning1():
         x2 = pos2.winfo_x()
         y2 = pos2.winfo_y()
         
+        # print(x1, y1, x2, y2)
+        im_crop = crop_img.crop((x1, y1, x2, y2))
+        im_crop.save(os.path.join(PATH, "custom", "modules", "img.png"))
+        time.sleep(0.5)
+        info_and_resize_img(os.path.join(PATH, "custom", "modules", "img.png"))
+        ex.update_photo()
+        
         crop_tk.destroy()
-
+    
     # ? Вспомогательные функции вспомогательных функций
 
     def bld_b1(event):
         global pos1, tick
         x = event.x
         y = event.y
-        pos1.place(x=x-5, y=y-5)
+        # Метрвая зона для защиты от телепортации кнопок
+        if x>=15 and y>=15:
+            pos1.place(x=x-7, y=y-7)
         
 
     def bld_b2(event):
         global pos2, tick
         x = event.x
         y = event.y
-        pos2.place(x=x-5, y=y-5)
+        # Метрвая зона для защиты от телепортации кнопок
+        if x>=15 and y>=15:
+            pos2.place(x=x-7, y=y-7)
+    
+    pos1 = tkinter.Button(master = crop_tk, text = "1", font = ("Helvetica", 12), bg = "Black", fg = "white", width = 1, height = 1, command = but_pos1)
+    pos1.place(x=0, y=0)
+    
+    pos2 = tkinter.Button(master = crop_tk, text = "2", font = ("Helvetica", 12), bg = "Black", fg = "white", width = 1, height = 1, command = but_pos2)
+    pos2.place(x=crop_img.size[0]-100, y=crop_img.size[1]-100)
+    
+    safe_crop = tkinter.Button(master = crop_tk, text = "Зберегти", font = ("Helvetica", 12), bg = "Black", fg = "white", width = 10, height = 1, command = but_Save_pos)
+    safe_crop.place(x=crop_img.size[0]-100, y=0)
+    
+    crop_tk.mainloop()
+
 
 
 # ! Развороты
@@ -382,7 +404,11 @@ def text_on_img(info = os.path.join(PATH, "custom", "modules", "img3.png")):
         
     text_on_img_root = tkinter.Tk()
     text_on_img_root.title("Текст на зображенні")
-    text_on_img_root.geometry(f"{img_open.size[0]+300}x{img_open.size[1]}")
+    if img_open.size[1] <=240:
+        ys = 240
+    else:
+        ys = img_open.size[1]
+    text_on_img_root.geometry(f"{img_open.size[0]+300}x{ys}")
     text_on_img_root.resizable(False, False)
     text_on_img_root["bg"] = "lightskyblue4"
     
