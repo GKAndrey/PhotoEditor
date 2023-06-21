@@ -53,7 +53,7 @@ def local_select_img(path = None):
 
 def web_select_img():
     global txt_on_im
-    dialog = customtkinter.CTkInputDialog(text="Введіть URL зображення:", title="Оберіть зображення")
+    dialog = CTkInputDialog(text="Введіть URL зображення:", title="Оберіть зображення")
     try:
         os.remove(os.path.join(PATH, "custom", "modules", "img3.png"))
     except:
@@ -228,7 +228,7 @@ def info_foto(info):
     Висота світлини: {info[0]["Висота світлини"][0]};
     Ширина світлини: {info[0]["Ширина світлини"][0]};
     Формат світлини: {info[0]["Формат світлини"]}.'''
-    label = customtkinter.CTkLabel(master = menu,
+    label = CTkLabel(master = menu,
                                    text = msg,
                                    height = 175,
                                    width = 250,

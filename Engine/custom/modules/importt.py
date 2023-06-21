@@ -1,7 +1,7 @@
 import PIL
 from PIL.ExifTags import TAGS
 from PIL import Image, ImageTk, ImageFilter, ImageDraw, ImageFont
-import customtkinter
+from customtkinter import CTk, CTkImage, CTkLabel, CTkInputDialog, CTkButton, CTkCheckBox, set_appearance_mode
 import os
 import requests
 import re
@@ -39,10 +39,10 @@ class Ex():
                 h1 = h1 // 2
             self.width = w1
             if size[0]:
-                self.image = customtkinter.CTkImage(img_open, size = size)
+                self.image = CTkImage(img_open, size = size)
             else:
-                self.image = customtkinter.CTkImage(img_open, size = (w1, h1))
-            self.image_sprite = customtkinter.CTkLabel(master=master,text = " ", image=self.image)
+                self.image = CTkImage(img_open, size = (w1, h1))
+            self.image_sprite = CTkLabel(master=master,text = " ", image=self.image)
         except:
             self.image_sprite = tkinter.Label(menu)
         if flag:
@@ -69,7 +69,7 @@ class Ex():
         while h1 > 720:
             w1 = w1 // 2
             h1 = h1 // 2
-        self.image = customtkinter.CTkImage(img_open, size = (w1, h1))
+        self.image = CTkImage(img_open, size = (w1, h1))
         self.image_sprite.configure(image = self.image)
         self.width = w1
         self.image_sprite.place(x = 1280-self.width, y=0)
@@ -83,7 +83,7 @@ try:
     os.remove(os.path.join(PATH, "custom", "modules", "img4.png"))
 except:
     pass
-menu = customtkinter.CTk("lightskyblue4")
+menu = CTk("lightskyblue4")
 
 save_tk = 0
 text_on_img_root = 0

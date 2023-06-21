@@ -1,1 +1,3 @@
-from Engine.custom.modules.importt import *
+ttt = ["sefse"]
+if ttt:
+    print("True")
