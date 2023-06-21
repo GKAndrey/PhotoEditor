@@ -20,6 +20,7 @@ def close_program():
 # ! Локальная выгрузка картинки
 
 def local_select_img():
+    global txt_on_im
     image_formats = [("Зображення", "*.jpg;*.jpeg;*.png")]
     file_path = filedialog.askopenfilename(filetypes=image_formats, title="Оберіть зображення")
     try:
@@ -33,6 +34,7 @@ def local_select_img():
                     f.write(g.read())
                 return_info = (file_path, info_and_resize_img(file_path))
                 ex.update_photo()
+                txt_on_im = []
                 return return_info
             except FileNotFoundError:
                 pass
@@ -40,6 +42,7 @@ def local_select_img():
 # ! Выгрузка картинки по URL
 
 def web_select_img():
+    global txt_on_im
     dialog = customtkinter.CTkDialog(text="Введіть URL зображення:", title="Оберіть зображення")
     try:
         os.remove(os.path.join(PATH, "custom", "modules", "img3.png"))
@@ -47,6 +50,7 @@ def web_select_img():
         pass
     URL_img = dialog.get_input()
     if URL_img != '':
+        txt_on_im = []
         try:
             img = requests.get(URL_img)
             file_path = os.path.join(PATH, "custom", "modules", "img.png")
@@ -78,7 +82,7 @@ def save_img():
     except:
         pass
     def save_file():
-        global save_path
+        global save_path, txt_on_im
         save_path = save_input.get()
         if save_path:
             try:
@@ -88,6 +92,16 @@ def save_img():
                     img_open = Image.open(os.path.join(PATH, "custom", "modules", "img4.png"))
                 else:
                     img_open = Image.open(os.path.join(PATH, "custom", "modules", "img3.png"))
+                if txt_on_im:
+                    text_img = ImageDraw.Draw(img_open)
+                    for i in txt_on_im:
+                        try:
+                            text_img.text(i["xy"], i["text"], fill = i["fill"], font = i["font"])
+                        except:
+                            text_img.text(i["xy"], i["text"], font = i["font"])
+                    img_open.save(os.path.join(PATH, "custom", "modules", "img4.png"))
+                    img_open = Image.open(os.path.join(PATH, "custom", "modules", "img4.png"))
+                    txt_on_im = []
                 img_open.save(save_path)
                 save_tk.destroy
             except ValueError:
@@ -157,15 +171,28 @@ def save_img():
 # ! Распределение размеров для отображения в окне
 
 def info_and_resize_img(file_path, safe_path = os.path.join(PATH, "custom", "modules", "img2.png")):
+    global resize_for_txt
     img_open = Image.open(file_path)
     w1 = img_open.width
     h1 = img_open.height
-    while w1 > 800:
-        w1 = w1 // 2
-        h1 = h1 // 2
+    while 1:
+        if w1 > 900:
+            w1 = w1 // 2
+            h1 = h1 // 2
+            resize_for_txt[0] = resize_for_txt[0] * 2
+            resize_for_txt[1] = resize_for_txt[1] * 2
+        elif w1 < 600:
+            w1 = w1 * 3
+            h1 = h1 * 3
+            resize_for_txt[0] = resize_for_txt[0] / 3
+            resize_for_txt[1] = resize_for_txt[1] / 3
+        else:
+            break
     while h1 > 720:
         w1 = w1 // 2
         h1 = h1 // 2
+        resize_for_txt[0] = resize_for_txt[0] * 2
+        resize_for_txt[1] = resize_for_txt[1] * 2
     img_resize = img_open.resize((w1, h1))
     img_resize.save(safe_path)
     img_resize = Image.open(safe_path)
@@ -211,6 +238,18 @@ def colorist(info = os.path.join(PATH, "custom", "modules", "img2.png"), flg = 1
     img_open.save(os.path.join(PATH, "custom", "modules", "img3.png"))
     img_open = Image.open(os.path.join(PATH, "custom", "modules", "img3.png"))
     flag = False
+    if txt_on_im:
+        flag = True
+        for i in txt_on_im:
+            text_img = ImageDraw.Draw(img_open)
+            try:
+                text_img.text((round(i["xy"][0] / resize_for_txt[0]), round(i["xy"][1] / resize_for_txt[1])), i["text"], fill = i["fill"], font = i["font"])
+                img_open.save(os.path.join(PATH, "custom", "modules", "img3.png"))
+                img_open = Image.open(os.path.join(PATH, "custom", "modules", "img3.png"))
+            except:
+                text_img.text((round(i["xy"][0] / resize_for_txt[0]), round(i["xy"][1] / resize_for_txt[1])), i["text"], font = i["font"])
+                img_open.save(os.path.join(PATH, "custom", "modules", "img3.png"))
+                img_open = Image.open(os.path.join(PATH, "custom", "modules", "img3.png"))
     if bl_w_w.get():
         img_open = img_open.convert('L')
         img_open.save(os.path.join(PATH, "custom", "modules", "img3.png"))
@@ -236,6 +275,7 @@ def colorist(info = os.path.join(PATH, "custom", "modules", "img2.png"), flg = 1
             ex.update_photo(os.path.join(PATH, "custom", "modules", "img3.png"))
         else:
             ex.update_photo()
+            
     # ImageFilter.BoxBlur()
 
 # ! Конвентарция разрешений
@@ -419,6 +459,7 @@ def text_on_img(info = os.path.join(PATH, "custom", "modules", "img3.png")):
     image_frame.pack(side=tkinter.RIGHT)
     
     def text_getting():
+        global txt_on_im
         text = text_on_img_text.get()
         try:
             img_open = Image.open(os.path.join(PATH, "custom", "modules", "img.png"))
@@ -475,19 +516,12 @@ def text_on_img(info = os.path.join(PATH, "custom", "modules", "img3.png")):
             font3 = ImageFont.truetype(fnt, size_font_var)
             
             txt_on_im.append({"xy":(x,y), "text":text, "fill":color_img, "font":font3})
-            
-            text_img = ImageDraw.Draw(img_open)
-            try:
-                text_img.text(txt_on_im[-1]["xy"], txt_on_im[-1]["text"], fill = txt_on_im[-1]["fill"], font = font3)
-            except:
-                messagebox.showerror("Помилка кольору!", "Через чорно-білий фільтр кольори недоступні!")
-                text_img.text(txt_on_im[-1]["xy"], txt_on_im[-1]["text"])
         except ValueError:
             messagebox.showerror("Помилка вводу даних!", "Невірно заповнені поля!")
         
         img_open.save(os.path.join(PATH, "custom", "modules", "img3.png"))
         info_and_resize_img(os.path.join(PATH, "custom", "modules", "img3.png"), os.path.join(PATH, "custom", "modules", "img3.png"))
-        colorist(os.path.join(PATH, "custom", "modules", "img3.png"))
+        colorist(os.path.join(PATH, "custom", "modules", "img2.png"))
         ex.update_photo(os.path.join(PATH, "custom", "modules", "img3.png"))
         
         # text_on_img_root.destroy()
@@ -542,3 +576,8 @@ def text_on_img(info = os.path.join(PATH, "custom", "modules", "img3.png")):
     text_on_img_submitt.place(x=0,y=225)
     
     text_on_img_root.mainloop()
+    
+def res_txt_event():
+    global txt_on_im
+    txt_on_im = []
+    colorist()

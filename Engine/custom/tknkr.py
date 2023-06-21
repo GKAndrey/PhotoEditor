@@ -22,8 +22,8 @@ menu.config(menu=main_menu)
 menu.protocol("WM_DELETE_WINDOW", close_program)
 
 none_l0 = tkinter.Label(menu, 
-                       text = '',
-                       bg = "lightskyblue4")
+                        text = '',
+                        bg = "lightskyblue4")
 none_l0.grid(row = 1, column = 0, padx=6, pady=25, sticky="nw")
 
 crop_b1 = tkinter.Button(master = menu,
@@ -46,38 +46,53 @@ crop_b2 = tkinter.Button(master = menu,
                         font = ("Helvetica", 12))
 crop_b2.grid(row = 3, column = 0, padx=6, pady=7, sticky="nw")
 
-none_l = tkinter.Label(menu,
-                       text = '',
-                       bg = "lightskyblue4")
+none_l = tkinter.Label(master = menu,
+                        text = '',
+                        bg = "lightskyblue4")
 none_l.grid(row = 4, column = 0, padx=6, pady=25, sticky="sw")
 
-bl_w = tkinter.Checkbutton(text="Чорно-білий",
-                           variable=bl_w_w,
-                           command = colorist,
-                           width = 20,
-                           height= 2,
-                           font=("Helvetica", 13),
-                           bg = "PaleTurquoise3",
-                           fg = "#191970",)
+bl_w = tkinter.Checkbutton(master = menu,
+                            text="Чорно-білий",
+                            variable=bl_w_w,
+                            command = colorist,
+                            width = 20,
+                            height= 2,
+                            font=("Helvetica", 13),
+                            bg = "PaleTurquoise3",
+                            fg = "#191970",)
 bl_w.grid(row = 5, column = 0, padx=6, pady=7, sticky="sw")
-mirr = tkinter.Checkbutton(text="Відзеркалити",
-                           variable=mirr_w,
-                           command = colorist,
-                           width = 20,
-                           height= 2,
-                           font=("Helvetica", 13),
-                           bg = "PaleTurquoise3",
-                           fg = "#191970")
+mirr = tkinter.Checkbutton(master = menu,
+                            text="Відзеркалити",
+                            variable=mirr_w,
+                            command = colorist,
+                            width = 20,
+                            height= 2,
+                            font=("Helvetica", 13),
+                            bg = "PaleTurquoise3",
+                            fg = "#191970")
 mirr.grid(row = 6, column = 0, padx=6, pady=7, sticky="sw")
-blur = tkinter.Checkbutton(text="Розмилення",
-                           variable=blur_w,
-                           command = colorist,
-                           width = 20,
-                           height= 2,
-                           font=("Helvetica", 13),
-                           bg = "PaleTurquoise3",
-                           fg = "#191970",)
+blur = tkinter.Checkbutton(master = menu,
+                            text="Розмилення",
+                            variable=blur_w,
+                            command = colorist,
+                            width = 20,
+                            height= 2,
+                            font=("Helvetica", 13),
+                            bg = "PaleTurquoise3",
+                            fg = "#191970",)
 blur.grid(row = 7, column = 0, padx=6, pady=7, sticky="sw")
+
+res_txt = customtkinter.CTkButton(master = menu,
+                                text = "Видалити напис на зображеннi",
+                                fg_color = ("PaleTurquoise3"),
+                                text_color = "#191970",
+                                font = ("Helvetica", 16),
+                                command = res_txt_event,
+                                width=120,
+                                height=50,
+                                border_width =  0,
+                                corner_radius = 8)
+res_txt.place(x=250, y = 357)
 
 rotate_b1 = tkinter.Button(master = menu,
                         text = 'Перегорнути світлину ↪️',

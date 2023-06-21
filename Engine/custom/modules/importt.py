@@ -50,6 +50,7 @@ save_tk = 0
 text_on_img_root = 0
 crop_tk = 0
 rotate = 0
+resize_for_txt = [1,1]
 txt_on_im = []
 bl_w_w = tkinter.IntVar()
 mirr_w = tkinter.IntVar()
