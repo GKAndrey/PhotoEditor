@@ -20,7 +20,7 @@ def close_program():
 # ! Локальная выгрузка картинки
 
 def local_select_img():
-    global txt_on_im
+    global txt_on_im, ex
     image_formats = [("Зображення", "*.jpg;*.jpeg;*.png")]
     file_path = filedialog.askopenfilename(filetypes=image_formats, title="Оберіть зображення")
     try:
@@ -33,6 +33,11 @@ def local_select_img():
                 with open(file_path, "rb") as g:
                     f.write(g.read())
                 return_info = (file_path, info_and_resize_img(file_path))
+                # try:
+                #     ex.update_photo()
+                # except:
+                #     info_and_resize_img(os.path.join(PATH, "custom", "modules", "img.png"))
+                #     ex = Ex(master = menu, size = (w1, h1))
                 ex.update_photo()
                 txt_on_im = []
                 return return_info
@@ -43,7 +48,7 @@ def local_select_img():
 
 def web_select_img():
     global txt_on_im
-    dialog = customtkinter.CTkDialog(text="Введіть URL зображення:", title="Оберіть зображення")
+    dialog = customtkinter.CTkInputDialog(text="Введіть URL зображення:", title="Оберіть зображення")
     try:
         os.remove(os.path.join(PATH, "custom", "modules", "img3.png"))
     except:
@@ -57,6 +62,7 @@ def web_select_img():
             with open(file_path, "wb") as f:
                 f.write(img.content)
             return_info = [file_path, info_and_resize_img(file_path)]
+            # 
             ex.update_photo()
             return return_info
         except:
@@ -65,6 +71,11 @@ def web_select_img():
                 file_path = os.path.join(PATH, "custom", "modules", "img.png")
                 with open(file_path, "wb") as f:
                     f.write(img.content)
+                # try:
+                #     info_and_resize_img(os.path.join(PATH, "custom", "modules", "img.png"))
+                #     ex = Ex(menu, (w1, h1))
+                # except:
+                #     pass
                 return_info = [file_path, info_and_resize_img(file_path)]
                 ex.update_photo()
                 return return_info
@@ -92,13 +103,6 @@ def save_img():
                     img_open = Image.open(os.path.join(PATH, "custom", "modules", "img4.png"))
                 else:
                     img_open = Image.open(os.path.join(PATH, "custom", "modules", "img3.png"))
-                if txt_on_im:
-                    text_img = ImageDraw.Draw(img_open)
-                    for i in txt_on_im:
-                        try:
-                            text_img.text(i["xy"], i["text"], fill = i["fill"], font = i["font"])
-                        except:
-                            text_img.text(i["xy"], i["text"], font = i["font"])
                     img_open.save(os.path.join(PATH, "custom", "modules", "img4.png"))
                     img_open = Image.open(os.path.join(PATH, "custom", "modules", "img4.png"))
                     txt_on_im = []
@@ -171,7 +175,7 @@ def save_img():
 # ! Распределение размеров для отображения в окне
 
 def info_and_resize_img(file_path, safe_path = os.path.join(PATH, "custom", "modules", "img2.png")):
-    global resize_for_txt
+    global resize_for_txt, w1, h1
     img_open = Image.open(file_path)
     w1 = img_open.width
     h1 = img_open.height
@@ -228,7 +232,6 @@ def info_foto(info):
 
 # ! Наложение эффектов
 
-# bl_w_w   mirr_w   blur_w
 def colorist(info = os.path.join(PATH, "custom", "modules", "img2.png"), flg = 1):
     try:
         text_on_img_root.destroy()
@@ -275,19 +278,6 @@ def colorist(info = os.path.join(PATH, "custom", "modules", "img2.png"), flg = 1
             ex.update_photo(os.path.join(PATH, "custom", "modules", "img3.png"))
         else:
             ex.update_photo()
-            
-    # ImageFilter.BoxBlur()
-
-# ! Конвентарция разрешений
-
-# def convertor(info, name, format):
-#     img_open = Image.open(info[0])
-#     if format == 1:
-#         img_open.save(f"{name}.png", "PNG")
-#     elif format == 2:
-#         img_open.save(f"{name}.jpeg", "JPEG")
-#     elif format == 3:
-#         img_open.save(f"{name}.jpg", "JPG")
 
 # ! Изменение размеров
 
@@ -372,7 +362,6 @@ def pruning1():
         x2 = pos2.winfo_x()
         y2 = pos2.winfo_y()
         
-        # print(x1, y1, x2, y2)
         im_crop = crop_img.crop((x1, y1, x2, y2))
         im_crop.save(os.path.join(PATH, "custom", "modules", "img.png"))
         time.sleep(0.5)
@@ -450,7 +439,7 @@ def text_on_img(info = os.path.join(PATH, "custom", "modules", "img3.png")):
         ys = 270
     else:
         ys = img_open.size[1]
-    text_on_img_root.geometry(f"{img_open.size[0]+300}x{ys}")
+    text_on_img_root.geometry(f"{img_open.size[0]+400}x{ys}")
     text_on_img_root.resizable(False, False)
     text_on_img_root["bg"] = "lightskyblue4"
     
@@ -524,56 +513,54 @@ def text_on_img(info = os.path.join(PATH, "custom", "modules", "img3.png")):
         colorist(os.path.join(PATH, "custom", "modules", "img2.png"))
         ex.update_photo(os.path.join(PATH, "custom", "modules", "img3.png"))
         
-        # text_on_img_root.destroy()
         
-        
-    text_on_img_text_l = tkinter.Label(master = text_on_img_root, text="Введіть текст для вставки у світлину", bg = "PaleTurquoise3", fg = "#191970", font=("Helvetica", 12))
-    text_on_img_text_l.place(x=0,y=0) 
+    text_on_img_text_l = tkinter.Label(master = text_on_img_root, text="Введіть текст для вставки у світлину", bg = "PaleTurquoise3", fg = "#191970", font=("Helvetica", 16))
+    text_on_img_text_l.place(x=0,y=10) 
         
     text_on_img_text = tkinter.Entry(text_on_img_root)
-    text_on_img_text.place(x=0,y=25)
+    text_on_img_text.place(x=0,y=60)
     
-    text_on_img_x_l = tkinter.Label(master = text_on_img_root, text="Введіть x координату", bg = "PaleTurquoise3", fg = "#191970", font=("Helvetica", 12))
-    text_on_img_x_l.place(x=0,y=50)
+    text_on_img_x_l = tkinter.Label(master = text_on_img_root, text="Введіть x координату", bg = "PaleTurquoise3", fg = "#191970", font=("Helvetica", 16))
+    text_on_img_x_l.place(x=0,y=110)
     
     text_on_img_x = tkinter.Entry(text_on_img_root)
-    text_on_img_x.place(x=0,y=75)
+    text_on_img_x.place(x=0,y=160)
     text_on_img_x.insert(0, "0")
     
-    text_on_img_y_l = tkinter.Label(master = text_on_img_root, text="Введіть y координату", bg = "PaleTurquoise3", fg = "#191970", font=("Helvetica", 12))
-    text_on_img_y_l.place(x=0,y=100)
+    text_on_img_y_l = tkinter.Label(master = text_on_img_root, text="Введіть y координату", bg = "PaleTurquoise3", fg = "#191970", font=("Helvetica", 16))
+    text_on_img_y_l.place(x=0,y=210)
     
     text_on_img_y = tkinter.Entry(text_on_img_root)
-    text_on_img_y.place(x=0,y=125)
+    text_on_img_y.place(x=0,y=260)
     text_on_img_y.insert(0, "0")
     
-    text_on_img_color_l = tkinter.Label(master = text_on_img_root, text="Введіть колір (RGB)", bg = "PaleTurquoise3", fg = "#191970", font=("Helvetica", 12))
-    text_on_img_color_l.place(x=0,y=150)
+    text_on_img_color_l = tkinter.Label(master = text_on_img_root, text="Введіть колір (RGB)", bg = "PaleTurquoise3", fg = "#191970", font=("Helvetica", 16))
+    text_on_img_color_l.place(x=0,y=310)
     
     text_on_img_color_r = tkinter.Entry(text_on_img_root, width=5)
-    text_on_img_color_r.place(x=0,y=175)
+    text_on_img_color_r.place(x=0,y=460)
     text_on_img_color_r.insert(0, "0")
     
     text_on_img_color_g = tkinter.Entry(text_on_img_root, width=5)
-    text_on_img_color_g.place(x=38,y=175)
+    text_on_img_color_g.place(x=60,y=460)
     text_on_img_color_g.insert(0, "0")
     
     text_on_img_color_b = tkinter.Entry(text_on_img_root, width=5)
-    text_on_img_color_b.place(x=76,y=175)
+    text_on_img_color_b.place(x=120,y=460)
     text_on_img_color_b.insert(0, "0")
 
     fonts = ["Arial", "Beautiful"]
     fonts_var = tkinter.StringVar(value=fonts[0])
     combbox = ttk.Combobox(master = text_on_img_root, width = 10, height = 1,textvariable = fonts_var, values = fonts, state="readonly")
-    combbox.place(x=0,y=200)
+    combbox.place(x=0,y=510)
     
     spinbox_var = tkinter.StringVar(value=50)
-    spinbox = ttk.Spinbox(master = text_on_img_root, from_=10.0, to=300.0, increment=5, state="readonly", textvariable=spinbox_var, width = 3, wrap = True)
-    spinbox.place(x=90, y=201)
+    spinbox = ttk.Spinbox(master = text_on_img_root, from_=10.0, to=300.0, increment=5, state="readonly", textvariable=spinbox_var, width = 5, wrap = True)
+    spinbox.place(x=142, y=510)
     
     
-    text_on_img_submitt = tkinter.Button(text_on_img_root, text="Вставити текст на зображення", command=text_getting, bg = "PaleTurquoise3", fg = "#191970", font=("Helvetica", 12))
-    text_on_img_submitt.place(x=0,y=225)
+    text_on_img_submitt = tkinter.Button(text_on_img_root, text="Вставити текст на зображення", command=text_getting, bg = "PaleTurquoise3", fg = "#191970", font=("Helvetica", 16))
+    text_on_img_submitt.place(x=0,y=560)
     
     text_on_img_root.mainloop()
     
@@ -581,3 +568,9 @@ def res_txt_event():
     global txt_on_im
     txt_on_im = []
     colorist()
+
+try:
+    info_and_resize_img(os.path.join(PATH, "custom", "modules", "img.png"))
+    ex = Ex(menu, (w1, h1))
+except:
+    pass

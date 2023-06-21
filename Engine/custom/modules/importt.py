@@ -16,12 +16,33 @@ import random
 PATH = os.path.abspath(__file__ + '/../../..')
 
 class Ex():
-    def __init__(self, master, path = os.path.join(PATH, "custom", "modules", "img2.png"), flag = True):
+    def __init__(self, master, size: list, path = os.path.join(PATH, "custom", "modules", "img2.png"), flag = True):
         try:
-            pil_image = Image.open(path)
-            self.width = pil_image.width
-            self.image = ImageTk.PhotoImage(pil_image)
-            self.image_sprite = tkinter.Label(master=master, image=self.image)
+            img_open = Image.open(path)
+            w1 = img_open.width
+            h1 = img_open.height
+            while 1:
+                if w1 > 900:
+                    w1 = w1 // 2
+                    h1 = h1 // 2
+                    resize_for_txt[0] = resize_for_txt[0] * 2
+                    resize_for_txt[1] = resize_for_txt[1] * 2
+                elif w1 < 600:
+                    w1 = w1 * 3
+                    h1 = h1 * 3
+                    resize_for_txt[0] = resize_for_txt[0] / 3
+                    resize_for_txt[1] = resize_for_txt[1] / 3
+                else:
+                    break
+            while h1 > 720:
+                w1 = w1 // 2
+                h1 = h1 // 2
+            self.width = img_open.width
+            if size[0]:
+                self.image = customtkinter.CTkImage(img_open, size = size)
+            else:
+                self.image = customtkinter.CTkImage(img_open, size = (w1, h1))
+            self.image_sprite = customtkinter.CTkLabel(master=master,text = " ", image=self.image)
         except:
             self.image_sprite = tkinter.Label(menu)
         if flag:
@@ -29,12 +50,14 @@ class Ex():
         else:
             self.image_sprite.grid(column=0,row=0)
     def update_photo(self, path=os.path.join(PATH, "custom", "modules", "img2.png")):
-        pil_image = Image.open(path)
-        self.image = ImageTk.PhotoImage(pil_image)
-        self.image_sprite["image"] = self.image
-        self.image_sprite.image = self.image
-        self.width = pil_image.width
+        img_open = Image.open(path)
+        w1 = img_open.width
+        h1 = img_open.height
+        self.image = customtkinter.CTkImage(img_open, size = (w1, h1))
+        self.image_sprite.configure(image = self.image)
+        self.width = img_open.width
         self.image_sprite.place(x = 1280-self.width, y=0)
+        
 
 try:
     os.remove(os.path.join(PATH, "custom", "modules", "img3.png"))
@@ -44,7 +67,7 @@ try:
     os.remove(os.path.join(PATH, "custom", "modules", "img4.png"))
 except:
     pass
-menu = tkinter.Tk()
+menu = customtkinter.CTk("lightskyblue4")
 
 save_tk = 0
 text_on_img_root = 0
@@ -55,8 +78,4 @@ txt_on_im = []
 bl_w_w = tkinter.IntVar()
 mirr_w = tkinter.IntVar()
 blur_w = tkinter.IntVar()
-
-try:
-    ex = Ex(menu)
-except:
-    pass
+w1, h1 = 0, 0
