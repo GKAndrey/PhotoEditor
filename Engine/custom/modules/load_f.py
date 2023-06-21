@@ -156,7 +156,7 @@ def save_img():
 
 # ! Распределение размеров для отображения в окне
 
-def info_and_resize_img(file_path):
+def info_and_resize_img(file_path, safe_path = os.path.join(PATH, "custom", "modules", "img2.png")):
     img_open = Image.open(file_path)
     w1 = img_open.width
     h1 = img_open.height
@@ -167,8 +167,8 @@ def info_and_resize_img(file_path):
         w1 = w1 // 2
         h1 = h1 // 2
     img_resize = img_open.resize((w1, h1))
-    img_resize.save(os.path.join(PATH, "custom", "modules", "img2.png"))
-    img_resize = Image.open(os.path.join(PATH, "custom", "modules", "img2.png"))
+    img_resize.save(safe_path)
+    img_resize = Image.open(safe_path)
     img_info = {
         "Назва світлини": img_open.filename,
         "Вага світлини": os.path.getsize(file_path) // 1024,
@@ -196,8 +196,7 @@ def info_foto(info):
                                    text = msg,
                                    height = 175,
                                    width = 250,
-                                   text_color="Black",
-                                   text_font=(os.path.join(PATH, "custom", "modules", "angrybirds-regular3.ttf"), 13),)
+                                   text_color="Black")
     label.grid(row = 0, column = 0, padx=7, pady=20,  sticky="nw")
 
 # ! Наложение эффектов
@@ -395,7 +394,7 @@ def rotate_img_right(info = os.path.join(PATH, "custom", "modules", "img3.png"))
 # ! Вставка текста
 
 def text_on_img(info = os.path.join(PATH, "custom", "modules", "img3.png")):
-    global text_on_img_root
+    global text_on_img_root, txt_on_im
     try:
         text_on_img_root.destroy()
     except:
@@ -407,8 +406,8 @@ def text_on_img(info = os.path.join(PATH, "custom", "modules", "img3.png")):
         
     text_on_img_root = tkinter.Tk()
     text_on_img_root.title("Текст на зображенні")
-    if img_open.size[1] <=240:
-        ys = 240
+    if img_open.size[1] <=270:
+        ys = 270
     else:
         ys = img_open.size[1]
     text_on_img_root.geometry(f"{img_open.size[0]+300}x{ys}")
@@ -422,6 +421,7 @@ def text_on_img(info = os.path.join(PATH, "custom", "modules", "img3.png")):
     def text_getting():
         text = text_on_img_text.get()
         try:
+            img_open = Image.open(os.path.join(PATH, "custom", "modules", "img.png"))
             x = int(text_on_img_x.get())
             if x >= img_open.size[0]:
                 x = img_open.size[0]
@@ -460,19 +460,37 @@ def text_on_img(info = os.path.join(PATH, "custom", "modules", "img3.png")):
             
             color_img = (color_r,color_g,color_b)
             
+            if combbox.get() == "Arial":
+                fnt = os.path.join(PATH, "custom", "modules", "ArialMT.ttf")
+            elif combbox.get() == "Beautiful":
+                fnt = os.path.join(PATH, "custom", "modules", "angrybirds-regular3.otf")
+            else:
+                fnt = os.path.join(PATH, "custom", "modules", "ArialMT.ttf")
+            
+            if spinbox.get():
+                size_font_var = int(spinbox.get())
+            else:
+                size_font_var = 20
+            
+            font3 = ImageFont.truetype(fnt, size_font_var)
+            
+            txt_on_im.append({"xy":(x,y), "text":text, "fill":color_img, "font":font3})
+            
             text_img = ImageDraw.Draw(img_open)
             try:
-                text_img.text((x,y), text, fill=color_img)
+                text_img.text(txt_on_im[-1]["xy"], txt_on_im[-1]["text"], fill = txt_on_im[-1]["fill"], font = font3)
             except:
                 messagebox.showerror("Помилка кольору!", "Через чорно-білий фільтр кольори недоступні!")
-                text_img.text((x,y), text)
+                text_img.text(txt_on_im[-1]["xy"], txt_on_im[-1]["text"])
         except ValueError:
             messagebox.showerror("Помилка вводу даних!", "Невірно заповнені поля!")
         
         img_open.save(os.path.join(PATH, "custom", "modules", "img3.png"))
+        info_and_resize_img(os.path.join(PATH, "custom", "modules", "img3.png"), os.path.join(PATH, "custom", "modules", "img3.png"))
+        colorist(os.path.join(PATH, "custom", "modules", "img3.png"))
         ex.update_photo(os.path.join(PATH, "custom", "modules", "img3.png"))
         
-        text_on_img_root.destroy()
+        # text_on_img_root.destroy()
         
         
     text_on_img_text_l = tkinter.Label(master = text_on_img_root, text="Введіть текст для вставки у світлину", bg = "PaleTurquoise3", fg = "#191970", font=("Helvetica", 12))
@@ -509,8 +527,18 @@ def text_on_img(info = os.path.join(PATH, "custom", "modules", "img3.png")):
     text_on_img_color_b = tkinter.Entry(text_on_img_root, width=5)
     text_on_img_color_b.place(x=76,y=175)
     text_on_img_color_b.insert(0, "0")
+
+    fonts = ["Arial", "Beautiful"]
+    fonts_var = tkinter.StringVar(value=fonts[0])
+    combbox = ttk.Combobox(master = text_on_img_root, width = 10, height = 1,textvariable = fonts_var, values = fonts, state="readonly")
+    combbox.place(x=0,y=200)
+    
+    spinbox_var = tkinter.StringVar(value=50)
+    spinbox = ttk.Spinbox(master = text_on_img_root, from_=10.0, to=300.0, increment=5, state="readonly", textvariable=spinbox_var, width = 3, wrap = True)
+    spinbox.place(x=90, y=201)
+    
     
     text_on_img_submitt = tkinter.Button(text_on_img_root, text="Вставити текст на зображення", command=text_getting, bg = "PaleTurquoise3", fg = "#191970", font=("Helvetica", 12))
-    text_on_img_submitt.place(x=0,y=200)
+    text_on_img_submitt.place(x=0,y=225)
     
     text_on_img_root.mainloop()
