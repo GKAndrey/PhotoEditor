@@ -19,10 +19,13 @@ def close_program():
 
 # ! Локальная выгрузка картинки
 
-def local_select_img():
+def local_select_img(path = None):
     global txt_on_im, ex
     image_formats = [("Зображення", "*.jpg;*.jpeg;*.png")]
-    file_path = filedialog.askopenfilename(filetypes=image_formats, title="Оберіть зображення")
+    if path:
+        file_path = path
+    else:
+        file_path = filedialog.askopenfilename(filetypes=image_formats, title="Оберіть зображення")
     try:
         os.remove(os.path.join(PATH, "custom", "modules", "img3.png"))
     except:
@@ -42,6 +45,8 @@ def local_select_img():
                 txt_on_im = []
                 return return_info
             except FileNotFoundError:
+                pass
+            except NameError:
                 pass
 
 # ! Выгрузка картинки по URL
@@ -357,6 +362,7 @@ def pruning1():
     
     def but_Save_pos():
         global crop_tk, pos1, pos2
+        os.remove(os.path.join(PATH, "custom", "modules", "img3.png"))
         x1 = pos1.winfo_x()
         y1 = pos1.winfo_y()
         x2 = pos2.winfo_x()
@@ -435,8 +441,8 @@ def text_on_img(info = os.path.join(PATH, "custom", "modules", "img3.png")):
         
     text_on_img_root = tkinter.Tk()
     text_on_img_root.title("Текст на зображенні")
-    if img_open.size[1] <=270:
-        ys = 270
+    if img_open.size[1] <=630:
+        ys = 630
     else:
         ys = img_open.size[1]
     text_on_img_root.geometry(f"{img_open.size[0]+400}x{ys}")
@@ -571,6 +577,7 @@ def res_txt_event():
 
 try:
     info_and_resize_img(os.path.join(PATH, "custom", "modules", "img.png"))
-    ex = Ex(menu, (w1, h1))
+    ex = Ex(menu)
 except:
-    pass
+    local_select_img(path = os.path.join(PATH, "custom", "none_photo.png"))
+    ex = Ex(menu)

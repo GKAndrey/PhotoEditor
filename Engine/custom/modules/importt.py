@@ -16,7 +16,7 @@ import random
 PATH = os.path.abspath(__file__ + '/../../..')
 
 class Ex():
-    def __init__(self, master, size: list, path = os.path.join(PATH, "custom", "modules", "img2.png"), flag = True):
+    def __init__(self, master, size: list = (0,0), path = os.path.join(PATH, "custom", "modules", "img2.png"), flag = True):
         try:
             img_open = Image.open(path)
             w1 = img_open.width
@@ -37,7 +37,7 @@ class Ex():
             while h1 > 720:
                 w1 = w1 // 2
                 h1 = h1 // 2
-            self.width = img_open.width
+            self.width = w1
             if size[0]:
                 self.image = customtkinter.CTkImage(img_open, size = size)
             else:
@@ -53,9 +53,25 @@ class Ex():
         img_open = Image.open(path)
         w1 = img_open.width
         h1 = img_open.height
+        while 1:
+            if w1 > 900:
+                w1 = w1 // 2
+                h1 = h1 // 2
+                resize_for_txt[0] = resize_for_txt[0] * 2
+                resize_for_txt[1] = resize_for_txt[1] * 2
+            elif w1 < 600:
+                w1 = w1 * 3
+                h1 = h1 * 3
+                resize_for_txt[0] = resize_for_txt[0] / 3
+                resize_for_txt[1] = resize_for_txt[1] / 3
+            else:
+                break
+        while h1 > 720:
+            w1 = w1 // 2
+            h1 = h1 // 2
         self.image = customtkinter.CTkImage(img_open, size = (w1, h1))
         self.image_sprite.configure(image = self.image)
-        self.width = img_open.width
+        self.width = w1
         self.image_sprite.place(x = 1280-self.width, y=0)
         
 
